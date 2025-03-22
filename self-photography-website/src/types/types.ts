@@ -27,3 +27,14 @@ export interface FrameColor {
   color: string;
   name: string;
 }
+
+export const PRESET_COLORS = {
+  pink: '#FFB5E8',   
+  purple: '#DCD3FF', 
+  mint: '#B5EAD7',   
+  yellow: '#FFDAC1',   
+  blue: '#9ADCFF',   
+  white: '#FFFFFF',  
+} as const;
+
+export type PresetColorKey = keyof typeof PRESET_COLORS;

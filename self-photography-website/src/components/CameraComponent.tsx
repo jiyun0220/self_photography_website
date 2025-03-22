@@ -197,14 +197,26 @@ const CelebrityImageWrapper = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100px;
+  width: 200px;
   height: auto;
   cursor: move;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
-  transform-origin: top left;
+  transform-origin: center;
+  z-index: 10;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    width: 150px;
+  }
 `;
 
 const WarningMessage = styled.div`
