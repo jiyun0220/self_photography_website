@@ -1,35 +1,20 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Photo, FrameStyle } from '../types/types';
+import { getFilterStyle } from '../utils/filters';
+import { theme } from '../styles/theme';
 
 interface PhotoFrameProps {
   photos: (Photo | null)[];
   frameStyle: FrameStyle;
 }
 
-const getFilterStyle = (filter: string) => {
-  switch (filter) {
-    case 'grayscale':
-      return 'grayscale(100%)';
-    case 'sepia':
-      return 'sepia(100%)';
-    case 'vintage':
-      return 'contrast(110%) brightness(110%) sepia(30%)';
-    case 'warm':
-      return 'saturate(150%) brightness(105%)';
-    case 'cool':
-      return 'saturate(80%) brightness(105%) hue-rotate(10deg)';
-    default:
-      return 'none';
-  }
-};
-
 const PhotoFrame: React.FC<PhotoFrameProps> = ({ photos, frameStyle }) => {
   return (
     <Frame style={{ backgroundColor: frameStyle.color }}>
       <Grid>
         {photos.map((photo, index) => (
-          <PhotoCell key={index}>
+          <PhotoCell key={index} className="photo-cell">
             {photo ? (
               <PhotoWrapper>
                 <PhotoImage 
@@ -59,12 +44,12 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ photos, frameStyle }) => {
 
 const Frame = styled.div`
   width: 100%;
-  max-width: 300px;
+  max-width: 320px;
   aspect-ratio: 1/3;
   margin: 0 auto;
   padding: 12px;
   background-color: black;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: ${theme.shadows.medium};
 `;
 
 const Grid = styled.div`
@@ -80,7 +65,7 @@ const Grid = styled.div`
 const PhotoCell = styled.div`
   width: 100%;
   aspect-ratio: 4/3;
-  background-color: white;
+  background-color: ${theme.colors.white};
   overflow: hidden;
   position: relative;
 `;
@@ -102,11 +87,10 @@ const CelebrityOverlay = styled.img`
   position: absolute;
   top: 0;
   left: 0;
-  width: 25%;
+  width: 100px;
   height: auto;
-  pointer-events: none;
-  user-select: none;
   transform-origin: top left;
+  pointer-events: none;
 `;
 
 const EmptyCell = styled.div`
@@ -115,8 +99,9 @@ const EmptyCell = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  color: #dee2e6;
+  font-size: 1.5rem;
+  color: ${theme.colors.text};
+  opacity: 0.5;
 `;
 
 export default PhotoFrame;

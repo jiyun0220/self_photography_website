@@ -1,24 +1,26 @@
+export type PhotoFilter = 'normal' | 'grayscale' | 'vintage' | 'warm' | 'cool' | 'white';
+
+export interface Position {
+  x: number;
+  y: number;
+}
+
 export interface CelebrityImage {
   imageUrl: string;
-  position: {
-    x: number;
-    y: number;
-  };
+  position: Position;
   scale: number;
 }
 
 export interface Photo {
   imageData: string;
-  filter: string;
+  filter: PhotoFilter;
   celebrityImage: CelebrityImage | null;
 }
 
 export interface FrameStyle {
+  filter: PhotoFilter;
   color: string;
-  filter: string;
 }
-
-export type PhotoFilter = 'normal' | 'grayscale' | 'sepia' | 'vintage' | 'warm' | 'cool';
 
 export interface FrameColor {
   id: string;

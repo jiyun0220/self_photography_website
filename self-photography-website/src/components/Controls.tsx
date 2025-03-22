@@ -8,41 +8,34 @@ interface ControlsProps {
   onFrameStyleChange: (style: Partial<FrameStyle>) => void;
 }
 
-const filters: PhotoFilter[] = ['normal', 'grayscale', 'sepia', 'vintage', 'warm', 'cool'];
-const colors = ['#000000', '#FFFFFF', '#FF69B4', '#4169E1', '#FFD700', '#98FB98'];
+const filters: PhotoFilter[] = ['normal', 'grayscale', 'vintage', 'warm', 'cool', 'white'];
 
 const Controls: React.FC<ControlsProps> = ({ frameStyle, onFrameStyleChange }) => {
   return (
-    <ControlsContainer>
+    <Container>
       <Section>
-        <SectionTitle>필터 선택</SectionTitle>
-        <FilterGrid>
+        <SectionTitle>필터</SectionTitle>
+        <FilterList>
           {filters.map((filter) => (
             <FilterButton
               key={filter}
-              $isSelected={frameStyle.filter === filter}
+              isSelected={frameStyle.filter === filter}
               onClick={() => onFrameStyleChange({ filter })}
             >
-              {getFilterName(filter)}
+              {getFilterEmoji(filter)} {getFilterName(filter)}
             </FilterButton>
           ))}
-        </FilterGrid>
+        </FilterList>
       </Section>
-
       <Section>
-        <SectionTitle>프레임 색상</SectionTitle>
-        <ColorGrid>
-          {colors.map((color) => (
-            <ColorButton
-              key={color}
-              $color={color}
-              $isSelected={frameStyle.color === color}
-              onClick={() => onFrameStyleChange({ color })}
-            />
-          ))}
-        </ColorGrid>
+        <SectionTitle>색상</SectionTitle>
+        <ColorInput
+          type="color"
+          value={frameStyle.color}
+          onChange={(e) => onFrameStyleChange({ color: e.target.value })}
+        />
       </Section>
-    </ControlsContainer>
+    </Container>
   );
 };
 
@@ -52,30 +45,46 @@ const getFilterName = (filter: PhotoFilter): string => {
       return '기본';
     case 'grayscale':
       return '흑백';
-    case 'sepia':
-      return '세피아';
     case 'vintage':
       return '빈티지';
     case 'warm':
       return '따뜻한';
     case 'cool':
-      return '차가운';
+      return '시원한';
+    case 'white':
+      return '화이트';
     default:
       return filter;
   }
 };
 
-const ControlsContainer = styled.div`
+const getFilterEmoji = (filter: PhotoFilter): string => {
+  switch (filter) {
+    case 'normal':
+      return '🌟';
+    case 'grayscale':
+      return '🖤';
+    case 'vintage':
+      return '🎞️';
+    case 'warm':
+      return '🌅';
+    case 'cool':
+      return '❄️';
+    case 'white':
+      return '✨';
+    default:
+      return '✨';
+  }
+};
+
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
 `;
 
-const Section = styled.section`
+const Section = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -83,48 +92,53 @@ const Section = styled.section`
 
 const SectionTitle = styled.h3`
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 600;
   color: ${theme.colors.text};
   margin: 0;
-`;
-
-const FilterGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
 `;
 
-const FilterButton = styled.button<{ $isSelected: boolean }>`
-  padding: 0.5rem;
-  border: 2px solid ${props => props.$isSelected ? theme.colors.primary : 'transparent'};
-  border-radius: 4px;
-  background: ${props => props.$isSelected ? theme.colors.primaryLight : theme.colors.background};
-  color: ${props => props.$isSelected ? theme.colors.primary : theme.colors.text};
-  font-size: 0.9rem;
+const FilterList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+`;
+
+const FilterButton = styled.button<{ isSelected: boolean }>`
+  padding: 0.8rem;
+  background-color: ${props => props.isSelected ? theme.colors.primary : theme.colors.white};
+  color: ${props => props.isSelected ? theme.colors.white : theme.colors.text};
+  border: 1px solid ${theme.colors.primary};
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 
   &:hover {
-    background: ${theme.colors.primaryLight};
-    border-color: ${theme.colors.primary};
+    background-color: ${props => props.isSelected ? theme.colors.primary : theme.colors.primaryLight};
+    color: ${theme.colors.white};
   }
 `;
 
-const ColorGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-`;
-
-const ColorButton = styled.button<{ $color: string; $isSelected: boolean }>`
+const ColorInput = styled.input`
   width: 100%;
-  aspect-ratio: 1;
-  border-radius: 4px;
-  background-color: ${props => props.$color};
-  border: 2px solid ${props => props.$isSelected ? theme.colors.primary : 'transparent'};
-  transition: transform 0.2s;
+  height: 40px;
+  padding: 0.5rem;
+  border: 1px solid ${theme.colors.primary};
+  cursor: pointer;
 
-  &:hover {
-    transform: scale(1.1);
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  &::-webkit-color-swatch {
+    border: none;
   }
 `;
 

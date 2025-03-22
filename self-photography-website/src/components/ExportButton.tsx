@@ -1,20 +1,21 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { toPng, toJpeg } from 'html-to-image';
+import { Photo } from '../types/types';
 import { theme } from '../styles/theme';
+import html2canvas from 'html2canvas';
 
 interface ExportButtonProps {
-  targetRef: React.RefObject<HTMLDivElement | null>;
+  photos: (Photo | null)[];
 }
 
-const ExportButton: React.FC<ExportButtonProps> = ({ targetRef }) => {
+const ExportButton: React.FC<ExportButtonProps> = ({ photos }) => {
   const handleExport = async (format: 'png' | 'jpeg') => {
-    if (!targetRef.current) return;
+    const photoElements = document.querySelectorAll('.photo-cell');
+    if (!photoElements.length || !photos.some(photo => photo)) return;
 
     try {
-      const dataUrl = await (format === 'png' 
-        ? toPng(targetRef.current)
-        : toJpeg(targetRef.current));
+      const canvas = await html2canvas(photoElements[0].parentElement as HTMLElement);
+      const dataUrl = format === 'png' ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg');
       
       const link = document.createElement('a');
       link.download = `4-cut-photo.${format}`;
@@ -27,8 +28,8 @@ const ExportButton: React.FC<ExportButtonProps> = ({ targetRef }) => {
 
   return (
     <ExportContainer>
-      <Button onClick={() => handleExport('png')}>PNG로 저장</Button>
-      <Button onClick={() => handleExport('jpeg')}>JPEG로 저장</Button>
+      <Button onClick={() => handleExport('png')}>PNG 저장</Button>
+      <Button onClick={() => handleExport('jpeg')}>JPEG 저장</Button>
     </ExportContainer>
   );
 };
@@ -36,22 +37,28 @@ const ExportButton: React.FC<ExportButtonProps> = ({ targetRef }) => {
 const ExportContainer = styled.div`
   display: flex;
   gap: 1rem;
-  justify-content: center;
-  margin: 1rem 0;
+  margin-top: 1rem;
 `;
 
 const Button = styled.button`
-  padding: 0.8rem 2rem;
-  font-size: 1.1rem;
+  padding: 0.8rem 1.5rem;
   background-color: ${theme.colors.primary};
-  color: white;
+  color: ${theme.colors.white};
   border: none;
-  border-radius: 4px;
+  border-radius: ${theme.borderRadius.medium};
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  box-shadow: ${theme.shadows.small};
 
   &:hover {
-    background-color: ${theme.colors.primaryDark};
+    transform: translateY(-2px);
+    box-shadow: ${theme.shadows.medium};
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 

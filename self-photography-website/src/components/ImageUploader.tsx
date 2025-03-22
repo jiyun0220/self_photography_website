@@ -1,87 +1,76 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import styled from '@emotion/styled';
 import { theme } from '../styles/theme';
 
 interface ImageUploaderProps {
-  onImageUpload: (imageUrl: string) => void;
+  onImageSelect: (imageUrl: string) => void;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelect }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.includes('png')) {
-      alert('PNG 파일만 업로드 가능합니다.');
-      return;
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          onImageSelect(e.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
     }
+  };
 
-    setIsLoading(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const imageUrl = e.target?.result as string;
-      onImageUpload(imageUrl);
-      setIsLoading(false);
-    };
-    reader.readAsDataURL(file);
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
     <Container>
-      <Label>
-        PNG 이미지 업로드
-        <Input
-          type="file"
-          accept=".png"
-          onChange={handleImageUpload}
-          disabled={isLoading}
-        />
-      </Label>
-      {isLoading && (
-        <LoadingMessage>
-          이미지를 불러오는 중입니다...
-        </LoadingMessage>
-      )}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png"
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+      />
+      <UploadButton onClick={handleButtonClick}>
+        <span role="img" aria-label="upload">📁</span> PNG 이미지 업로드
+      </UploadButton>
     </Container>
   );
 };
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border: 2px dashed ${theme.colors.primary};
-  border-radius: 8px;
-  background-color: ${theme.colors.background};
+  justify-content: center;
+  margin: 1rem 0;
 `;
 
-const Label = styled.label`
-  background-color: ${theme.colors.primary};
-  color: white;
+const UploadButton = styled.button`
   padding: 0.8rem 1.5rem;
-  border-radius: 6px;
-  cursor: pointer;
+  background-color: ${theme.colors.primary};
+  color: ${theme.colors.white};
+  border: none;
+  border-radius: ${theme.borderRadius.medium};
   font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
   transition: all 0.2s;
+  box-shadow: ${theme.shadows.small};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
   &:hover {
-    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: ${theme.shadows.medium};
   }
-`;
 
-const Input = styled.input`
-  display: none;
-`;
-
-const LoadingMessage = styled.div`
-  color: ${theme.colors.primary};
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 0.5rem;
+  &:active {
+    transform: translateY(0);
+  }
 `;
 
 export default ImageUploader;

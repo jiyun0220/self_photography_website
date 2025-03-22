@@ -12,7 +12,6 @@ export const FRAME_COLORS: FrameColor[] = [
 export const PHOTO_FILTERS: { id: PhotoFilter; name: string }[] = [
   { id: 'normal', name: '기본' },
   { id: 'grayscale', name: '흑백' },
-  { id: 'sepia', name: '세피아' },
   { id: 'vintage', name: '빈티지' },
   { id: 'warm', name: '따뜻한' },
   { id: 'cool', name: '차가운' },
@@ -23,17 +22,31 @@ export const theme = {
     primary: '#FF69B4',
     primaryLight: '#FFB6C1',
     primaryDark: '#FF1493',
-    background: '#F8F9FA',
-    text: '#212529',
+    background: '#FFF0F5',
+    white: '#FFFFFF',
+    text: '#333333',
+    border: '#E9ECEF',
   },
   breakpoints: {
-    mobile: '576px',
+    mobile: '480px',
     tablet: '768px',
-    desktop: '1200px',
+    desktop: '1024px',
   },
   spacing: {
     small: '0.5rem',
     medium: '1rem',
-    large: '2rem',
+    large: '1.5rem',
   },
-};
+  borderRadius: {
+    small: '4px',
+    medium: '8px',
+    large: '12px',
+  },
+  shadows: {
+    small: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    medium: '0 4px 8px rgba(0, 0, 0, 0.15)',
+    large: '0 8px 16px rgba(0, 0, 0, 0.2)',
+  },
+} as const;
+
+export type Theme = typeof theme;
