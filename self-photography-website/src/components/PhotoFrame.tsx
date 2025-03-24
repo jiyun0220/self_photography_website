@@ -11,7 +11,7 @@ interface PhotoFrameProps {
 
 const PhotoFrame: React.FC<PhotoFrameProps> = ({ photos, frameStyle }) => {
   return (
-    <Frame style={{ backgroundColor: frameStyle.color }}>
+    <Frame className="photo-frame" style={{ backgroundColor: frameStyle.color }}>
       <Grid>
         {photos.map((photo, index) => (
           <PhotoCell key={index} className="photo-cell">
